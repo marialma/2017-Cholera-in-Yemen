@@ -1,5 +1,5 @@
 # 2017-Cholera-in-Yemen
 
-Pulling data from the Humanitarian Data Exchange in an effort to learn a bit more about the cholera outbreak in Yemen. I'm using this as a chance to learn some R. I'll be shaping the data in R, and displaying using Tableau Public. The final visualization will be displayed here when I'm done. 
+[Back to the portfolio page...](https://marialma.github.io/)
 
-Also, I wanna finally learn how to use Github :D
+Pulling data from the Humanitarian Data Exchange in an effort to learn a bit more about the cholera outbreak in Yemen. I'm using this as a chance to learn some R. I'll be shaping the data in R, and displaying using Tableau Public. The final visualization will be displayed here when I'm done. 
