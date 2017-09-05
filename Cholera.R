@@ -20,7 +20,7 @@ cholera <-  rename(cholera,
 #R is reading in this CSV with the cases as characters instead of numeric
 # because some of the numbers have commas. This is to remove those
 
-cholera$Cases <- (gsub(",", "", cholera$Cases)) 
+cholera$Cases <- gsub(",", "", cholera$Cases)
 cholera$Cases <- cholera$Cases %>% as.character %>% as.numeric
 cholera$Date <- cholera$Date %>% as.character %>% as.Date
 
@@ -64,6 +64,7 @@ write.csv(cholera, file = "2017YemenCholera.csv")
 #Subsetting out hospital airstrikes from overall airstrike data
 hospitals <- subset(yemendata, Main.category == "Medical_Facility")
 hospitals <- droplevels(hospitals)
+levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
 
 #writing to CSV
 write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
