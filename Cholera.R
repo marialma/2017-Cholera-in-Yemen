@@ -63,6 +63,9 @@ write.csv(cholera, file = "2017YemenCholera.csv")
 
 #Subsetting out hospital airstrikes from overall airstrike data
 hospitals <- subset(yemendata, Main.category == "Medical_Facility")
+hospitals <- transmute(hospitals, Date, Governorate, Target, Sub.category)
+hospitals <-  rename(hospitals, facility_type = "Sub.category")
+                   
 hospitals <- droplevels(hospitals)
 levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
 
