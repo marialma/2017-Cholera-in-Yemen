@@ -64,48 +64,54 @@ cholera <- cholera %>%
   arrange(Date) %>%
   mutate(newcases = Cases - lag(Cases, default=0))
 
+cholera <-  rename(cholera, Governorate = "COD") ## should have done this earlier, but now i'm being lazy.
+
 #write to CSV
 write.csv(cholera, file = "2017YemenCholera.csv")
 
-#Subsetting out hospital airstrikes from overall airstrike data
-hospitals <- subset(yemendata, Main.category == "Medical_Facility")
-hospitals <- transmute(hospitals, Date, Governorate, Target, Sub.category)
-hospitals <-  rename(hospitals, facility_type = "Sub.category")
+
+#removing unwanted vars from ydp
+bombings <- transmute(yemendata, Date, Governorate, Target, Sub.category)
+bombings <-  rename(bombings, facility_type = "Sub.category")
                    
-hospitals <- droplevels(hospitals)
-levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
+
+# in order to find the levels to compare: unique(bombings$Governorate) 
+# compared to unique(hospitals$Governorate). This has to be done manually
+# possible easier way?? Levels must be dropped first. 
+
+bombings <- droplevels(bombings)
+levels(bombings$Governorate) <- c("Sana'a", "Sana'a", "Al Dhale'e", "Hajjah", 
+                                  "Lahj", "Sa'ada", "Taizz", "Abyan", 
+                                  "Al Hudaydah", "Marib", "Amran", "Dhamar", 
+                                  "Al Jawf", "Al Bayda", "Shabwah", "Aden", 
+                                  "Ibb", "Raymah", "Al Mahwit", "Lahj", "Hadramaut",
+                                  "Lahj")
+bombings$Governorate <- as.factor(bombings$Governorate)
 
 #writing to CSV
-write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
-
-
+write.csv(bombings, file = "2017YemenBombings.csv")
 
 rm("choleradata", "hadramaut", "yemendata")
 
-# Number of times each governorate had a hospital that was bombed
 
-bombings <- hospitals$Governorate %>% 
+# Number of times each governorate was bombed
+bombcount <- bombings$Governorate %>% 
   unlist %>% 
   table %>% 
   as.data.frame
 
-bombings <- rename(bombings, Governorate = ".") ## probably a more efficient way to do this part
+bombcount <- rename(bombcount, Governorate = ".") ## probably a more efficient way to do this part
 
+#combining bombing dataset with cholera dataset
 
-cholera <-  rename(cholera, Governorate = "COD") ## should have done this earlier, but now i'm being lazy.
+cholvars <- subset(cholera, cholera$Date == "2017-05-22")
+cholvars <- subset(cholvars, select = c(Governorate, Cases))
 
-#combining bombing dataset with cholera dataset - want to see ARs
-#in areas that got bombed
+miniset <- merge(cholvars,bombcount)
 
-test <- subset(cholera, cholera$Date == "2017-05-22")
-test <- subset(test, select = c(Governorate, attack_rate))
-
-miniset <- merge(test,bombings)
-
-cholera2 <- subset(cholera, select = c(Date, Governorate, attack_rate))
-govs <- merge(cholera2,bombings)
 ###############
 # Correlation #
 ###############
 
-cor(miniset$Freq, miniset$attack_rate)
+cor(miniset$Freq, miniset$Cases)
+
