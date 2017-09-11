@@ -4,6 +4,7 @@
 * Look at correlations between places that were bombed over the last two years and how bad cholera is
   * attack rate vs CFR vs total numbers?
   * regression?
+* Time series data here is going to be useful - but how?
 * Python 
 * Update datasets 
 
