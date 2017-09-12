@@ -7,6 +7,9 @@ Pulling data from the [Humanitarian Data Exchange](https://data.humdata.org/data
 The current plan is to shape data using R, then using Bokeh in Python to display it. 
 
 ## Initial Results
+
+Find this in the full_bomb_dataset_used branch. 
+
 As of 2017-09-11, my cholera dataset is behind by about 3 weeks. Additionally, the cholera datast starts at the end of May 2017, and the Yemen Data Project dataset ends in March 2017. The code is mostly ready to be run, but I think I'm going to have to wait for that data. 
 
 The cholera epidemic is likely several months in the making before the first couple cases. It takes some pretty serious infrastructure damage to get cholera cases, and more damage to get them to spread. Initially, I was hoping to show a correlation between locations that were heavily bombed, and where the initial cases of cholera were being seen. 
