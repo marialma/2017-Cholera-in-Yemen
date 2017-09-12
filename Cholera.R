@@ -103,15 +103,27 @@ bombcount <- bombings$Governorate %>%
 bombcount <- rename(bombcount, Governorate = ".") ## probably a more efficient way to do this part
 
 #combining bombing dataset with cholera dataset
+# change date as needed.
 
 cholvars <- subset(cholera, cholera$Date == "2017-05-22")
-cholvars <- subset(cholvars, select = c(Governorate, Cases))
-
+cholvars <- subset(cholvars, select = c(Governorate, attack_rate, Cases, case_fatality))
 miniset <- merge(cholvars,bombcount)
 
 ###############
 # Correlation #
 ###############
+# had to drop Lahj because it's such an outlier- bombed 4k times, where
+# next most bombed place was mahwit at 2k
+# probably worth doing stats to this to figure out if it really is
+# a huge outlier.
+
+miniset <- miniset[-c(13), ]
 
 cor(miniset$Freq, miniset$Cases)
+cor(miniset$Freq, miniset$case_fatality)
+cor(miniset$Freq, miniset$attack_rate)
+
+qplot(attack_rate, Freq, data=miniset)
+qplot(case_fatality, Freq, data=miniset)
+qplot(Cases, Freq, data=miniset)
 
