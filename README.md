@@ -15,13 +15,14 @@ As of 2017-09-11, my cholera dataset is behind by about 3 weeks. Additionally, t
 The cholera epidemic is likely several months in the making before the first couple cases. It takes some pretty serious infrastructure damage to get cholera cases, and more damage to get them to spread. Initially, I was hoping to show a correlation between locations that were heavily bombed, and where the initial cases of cholera were being seen. 
 
 Unfortunately, this correlation was poor - showing pretty much no correlation. This could be explained in several ways - possibly migration, or data loss. 
-* Heavily bombed areas just had a lot of people move away. 
+* Heavily bombed areas just meant a lot of people moved away. 
+* People went to the next area over to seek medical care. 
 * People dying from cholera just aren't being counted, as there's nowhere to count them
 * Lack of good reporting infrastructure, especially in the first couple days of a declared epidemic. 
 
 It's kind of hard to say. Additionally, the time lag for the data makes any relationship I pull out of it to be kind of a stretch. I will look again and put the graphs/ stats-y things up when I get an updated data set. 
 
-I also think that this is something that makes more sense to display geographically - this kind of correlation doesn't take into considering being near an area that had a lot of infrastructure damage, whereas mapping this data would make that relationship much more obvious. 
+I also think that this is something that makes more sense to display geographically - this kind of correlation doesn't take into consideration being near an area that had a lot of infrastructure damage, whereas mapping this data would make that relationship much more obvious. 
 
 
 To be updated again. 
