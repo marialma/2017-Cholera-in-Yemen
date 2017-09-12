@@ -6,7 +6,7 @@ Pulling data from the [Humanitarian Data Exchange](https://data.humdata.org/data
 
 The current plan is to shape data using R, then using Bokeh in Python to display it. 
 
-## Initial Results
+## Preliminary glance
 
 Find this in the full_bomb_dataset_used branch. 
 
@@ -20,5 +20,8 @@ Unfortunately, this correlation was poor - showing pretty much no correlation. T
 * Lack of good reporting infrastructure, especially in the first couple days of a declared epidemic. 
 
 It's kind of hard to say. Additionally, the time lag for the data makes any relationship I pull out of it to be kind of a stretch. I will look again and put the graphs/ stats-y things up when I get an updated data set. 
+
+I also think that this is something that makes more sense to display geographically - this kind of correlation doesn't take into considering being near an area that had a lot of infrastructure damage, whereas mapping this data would make that relationship much more obvious. 
+
 
 To be updated again. 

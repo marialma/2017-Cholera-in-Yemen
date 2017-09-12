@@ -5,6 +5,7 @@
   * attack rate vs CFR vs total numbers?
   * regression?
 * Python 
+* Mapping?
 * Update datasets 
 
 
