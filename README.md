@@ -6,6 +6,11 @@ Pulling data from the [Humanitarian Data Exchange](https://data.humdata.org/data
 
 The current plan is to shape data using R, then using Bokeh in Python to display it. 
 
+## To Do:
+* Plot out outbreak data using [Bokeh](http://bokeh.pydata.org/en/latest/).
+* Map data with time series 
+* Include bombing data 
+
 ## Preliminary glance
 
 Find this in the full_bomb_dataset_used branch. 
