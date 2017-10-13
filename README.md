@@ -11,3 +11,6 @@ The current plan is to shape data using R, then using [Bokeh](http://bokeh.pydat
   * [Check this out here](http://htmlpreview.github.io/?https://github.com/marialma/2017-Cholera-in-Yemen/blob/master/2017Cholera.html)
 - [ ] Map data with time series 
 - [ ] Include bombing data 
+
+## 
+[Initial mapping attempt in Tableau here](https://public.tableau.com/profile/maria.ma5849#!/vizhome/YemenCholera/Story1), but I feel like there are too many limitations to using Tableau. I hope to start to recreate this. (D3.js?)
