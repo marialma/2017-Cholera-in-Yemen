@@ -2,6 +2,7 @@ rm(list = ls())
 library(dplyr)
 setwd("~/Documents/Yemen Cholera")
 choleradata <- read.csv("Yemen Cholera Outbreak Epidemiology Data - Data_Governorate_Level.csv")
+yemendata <- read.csv("ydp.csv")
 
 # Dropping unnecessary variables. There's probably a less dumb way to do this.
 
@@ -19,7 +20,7 @@ cholera <-  rename(cholera,
 #R is reading in this CSV with the cases as characters instead of numeric
 # because some of the numbers have commas. This is to remove those
 
-cholera$Cases <- gsub(",", "", cholera$Cases)
+cholera$Cases <- (gsub(",", "", cholera$Cases)) 
 cholera$Cases <- cholera$Cases %>% as.character %>% as.numeric
 cholera$Date <- cholera$Date %>% as.character %>% as.Date
 
@@ -59,3 +60,10 @@ cholera <- cholera %>%
 
 #write to CSV
 write.csv(cholera, file = "2017YemenCholera.csv")
+
+#Subsetting out hospital airstrikes from overall airstrike data
+hospitals <- subset(yemendata, Main.category == "Medical_Facility")
+hospitals <- droplevels(hospitals)
+
+#writing to CSV
+write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
