@@ -1,8 +1,17 @@
 rm(list = ls())
 library(dplyr)
-setwd("~/Documents/Yemen Cholera")
+library(ggplot2)
+setwd("~/GitHub/2017-Cholera-in-Yemen")
 choleradata <- read.csv("Yemen Cholera Outbreak Epidemiology Data - Data_Governorate_Level.csv")
 yemendata <- read.csv("ydp.csv")
+<<<<<<< HEAD
+=======
+
+######################
+# Getting data ready #
+######################
+
+>>>>>>> 8d6d6d530cae4919b376a76f9a077a9ebd431551
 
 # Dropping unnecessary variables. There's probably a less dumb way to do this.
 
@@ -29,6 +38,9 @@ cholera$Date <- cholera$Date %>% as.character %>% as.Date
 # Divide attack rate by 10 for entries after Aug 14th. Is there a way to detect this automatically?
 
 cholera <- mutate(cholera, attack_rate = ifelse(cholera$Date > "2017-08-14", attack_rate/10, attack_rate))
+# cholera <- mutate(cholera, attack_rate = ifelse(cholera$Date > "2017-08-14", attack_rate/10, attack_rate))
+
+# Editing to add: This error was fixed in subsequent versions of the dataset. 
 
 # Hadramaut is split into Say'on and Moklla, but data for this isn't available until after July. 
 # Say'on and Moklla data, conveniently, are labeled as #N/A in COD.Gov.English. 
@@ -63,7 +75,50 @@ write.csv(cholera, file = "2017YemenCholera.csv")
 
 #Subsetting out hospital airstrikes from overall airstrike data
 hospitals <- subset(yemendata, Main.category == "Medical_Facility")
+<<<<<<< HEAD
 hospitals <- droplevels(hospitals)
 
 #writing to CSV
 write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
+=======
+hospitals <- transmute(hospitals, Date, Governorate, Target, Sub.category)
+hospitals <-  rename(hospitals, facility_type = "Sub.category")
+                   
+hospitals <- droplevels(hospitals)
+levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
+
+#writing to CSV
+write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
+
+
+
+rm("choleradata", "hadramaut", "yemendata")
+
+# Number of times each governorate had a hospital that was bombed
+
+bombings <- hospitals$Governorate %>% 
+  unlist %>% 
+  table %>% 
+  as.data.frame
+
+bombings <- rename(bombings, Governorate = ".") ## probably a more efficient way to do this part
+
+
+cholera <-  rename(cholera, Governorate = "COD") ## should have done this earlier, but now i'm being lazy.
+
+#combining bombing dataset with cholera dataset - want to see ARs
+#in areas that got bombed
+
+test <- subset(cholera, cholera$Date == "2017-05-22")
+test <- subset(test, select = c(Governorate, attack_rate))
+
+miniset <- merge(test,bombings)
+
+cholera2 <- subset(cholera, select = c(Date, Governorate, attack_rate))
+govs <- merge(cholera2,bombings)
+###############
+# Correlation #
+###############
+
+cor(miniset$Freq, miniset$attack_rate)
+>>>>>>> 8d6d6d530cae4919b376a76f9a077a9ebd431551
