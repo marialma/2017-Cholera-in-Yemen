@@ -37,7 +37,6 @@ cholera$Date <- cholera$Date %>% as.character %>% as.Date
 # I checked against the original data to confirm this. So, gotta fix that. 
 # Divide attack rate by 10 for entries after Aug 14th. Is there a way to detect this automatically?
 
-cholera <- mutate(cholera, attack_rate = ifelse(cholera$Date > "2017-08-14", attack_rate/10, attack_rate))
 # cholera <- mutate(cholera, attack_rate = ifelse(cholera$Date > "2017-08-14", attack_rate/10, attack_rate))
 
 # Editing to add: This error was fixed in subsequent versions of the dataset. 
