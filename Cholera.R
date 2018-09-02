@@ -70,23 +70,21 @@ cholera$COD <- as.factor(cholera$COD)
 cholera <- mutate(cholera, case_fatality = round((Deaths/Cases)*100, 1))
 #write to CSV
 write.csv(cholera, file = "2017YemenCholera.csv")
-#library(rgdal)
+
+
+#Animated Map
 library(gganimate)
-
-#yemen <- readOGR("yemen_admin_20171007_shape")
-#yemen <- fortify(yemen)
-
 library(tidyverse)
 cholera2 <- transmute(cholera, Date= Date, Cases = Cases, COD = COD)
-cholera3 <- spread(cholera2, Date, Cases)
-cholera3 <- gather(cholera3, "Date", "Cases", -1)
-cholera3$Date <- as.Date(cholera3$Date)
+cholera2 <- spread(cholera2, Date, Cases) #this has to be done to introduce NA values so the map animation doesn't have empty space
+cholera2 <- gather(cholera2, "Date", "Cases", -1)
+cholera2$Date <- as.Date(cholera2$Date)
 
 
 library(sf)
 yemen1 <- read_sf("yemen_admin_20171007_shape")
 yemen1 <- transmute(yemen1, COD = name_en, geometry = geometry)
-map2 <- right_join(yemen1, cholera3)
+map2 <- right_join(yemen1, cholera2)
 
 
 map2 <- map2 %>%
@@ -97,16 +95,39 @@ map2 <- map2 %>%
   group_by(COD) %>%
   arrange(Date) 
 
-
 yemen_cases <- ggplot(map2) + geom_sf(aes(fill = Cases), color = "black") +
-  scale_fill_viridis_c(na.value = "grey") + theme_void() + 
-  transition_time(Date) + labs(title = "Cumulative Cholera Cases: {frame_time}")
+  scale_fill_viridis_c(na.value = "grey") + 
+  transition_time(Date) + labs(title = "Cumulative Cholera Cases: {frame_time}") + theme_void()
 
 img <- animate(yemen_cases)
-anim_save("test2.gif")
+anim_save("Yemen_Cases.gif")
 
 
+#Animate: Attack Rate
+cholera3 <- transmute(cholera, Date= Date, attack_rate = attack_rate, COD = COD)
+cholera3 <- spread(cholera3, Date, attack_rate) #this has to be done to introduce NA values so the map animation doesn't have empty space
+cholera3 <- gather(cholera3, "Date", "attack_rate", -1)
+cholera3$Date <- as.Date(cholera3$Date)
+map3 <- right_join(yemen1, cholera3)
 
+map3 <- map3 %>%
+  group_by(Date) %>%
+  arrange(COD) 
+
+map3 <- map3 %>%
+  group_by(COD) %>%
+  arrange(Date) 
+
+yemen_AR <- ggplot(map3) + geom_sf(aes(fill = attack_rate), color = "black") +
+  scale_fill_viridis_c(na.value = "grey") + 
+  transition_time(Date) + labs(title = "Cholera Attack Rate: {frame_time}") + theme_void()
+
+img <- animate(yemen_AR)
+anim_save("Yemen_AR.gif")
+
+ggplot(cholera2) + geom_line(aes(x=Date, y= Cases, color = COD)) + 
+  theme(legend.position = "bottom") 
+### The next part of this is a massive work in progress ###
 
 #Subsetting out hospital airstrikes from overall airstrike data
 hospitals <- subset(yemendata, Main.category == "Medical_Facility")
