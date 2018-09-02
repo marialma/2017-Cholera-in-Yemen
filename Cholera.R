@@ -1,17 +1,15 @@
 rm(list = ls())
 library(dplyr)
 library(ggplot2)
-setwd("~/GitHub/2017-Cholera-in-Yemen")
+setwd("~/Documents/GitHub/2017-Cholera-in-Yemen")
 choleradata <- read.csv("Yemen Cholera Outbreak Epidemiology Data - Data_Governorate_Level.csv")
 yemendata <- read.csv("ydp.csv")
-<<<<<<< HEAD
-=======
+
 
 ######################
 # Getting data ready #
 ######################
 
->>>>>>> 8d6d6d530cae4919b376a76f9a077a9ebd431551
 
 # Dropping unnecessary variables. There's probably a less dumb way to do this.
 
@@ -22,9 +20,9 @@ cholera <- mutate(choleradata,COD.Gov.Arabic = NULL) %>%
 # Renaming variables to be easier to type
 
 cholera <-  rename(cholera, 
-         attack_rate = "Attack.Rate..per.1000.",
-         case_fatality = "CFR....",
-         COD = "COD.Gov.English")
+                   attack_rate = "Attack.Rate..per.1000.",
+                   case_fatality = "CFR....",
+                   COD = "COD.Gov.English")
 
 #R is reading in this CSV with the cases as characters instead of numeric
 # because some of the numbers have commas. This is to remove those
@@ -63,26 +61,64 @@ cholera <- cholera %>%
   bind_rows(hadramaut)
 cholera$COD <- as.factor(cholera$COD)
 
-# Figure out new daily cases. This part was unashamedly taken from someone on stackexchange.
-cholera <- cholera %>%
-  group_by(COD) %>%
-  arrange(Date) %>%
-  mutate(newcases = Cases - lag(Cases, default=0))
+# Figure out new daily cases.
+#cholera <- cholera %>%
+#  group_by(COD) %>%
+#  arrange(Date) %>%
+#  mutate(newcases = Cases - lag(Cases, default=0))
 
+cholera <- mutate(cholera, case_fatality = round((Deaths/Cases)*100, 1))
 #write to CSV
 write.csv(cholera, file = "2017YemenCholera.csv")
+#library(rgdal)
+library(gganimate)
+
+#yemen <- readOGR("yemen_admin_20171007_shape")
+#yemen <- fortify(yemen)
+
+library(tidyverse)
+cholera2 <- transmute(cholera, Date= Date, Cases = Cases, COD = COD)
+cholera3 <- spread(cholera2, Date, Cases)
+cholera3 <- gather(cholera3, "Date", "Cases", -1)
+cholera3$Date <- as.Date(cholera3$Date)
+
+
+library(sf)
+yemen1 <- read_sf("yemen_admin_20171007_shape")
+yemen1 <- transmute(yemen1, COD = name_en, geometry = geometry)
+map2 <- right_join(yemen1, cholera3)
+
+
+map2 <- map2 %>%
+  group_by(Date) %>%
+  arrange(COD) 
+
+map2 <- map2 %>%
+  group_by(COD) %>%
+  arrange(Date) 
+
+
+yemen_cases <- ggplot(map2) + geom_sf(aes(fill = Cases), color = "black") +
+  scale_fill_viridis_c(na.value = "grey") + theme_void() + 
+  transition_time(Date) + labs(title = "Cumulative Cholera Cases: {frame_time}")
+
+img <- animate(yemen_cases)
+anim_save("test2.gif")
+
+
+
 
 #Subsetting out hospital airstrikes from overall airstrike data
 hospitals <- subset(yemendata, Main.category == "Medical_Facility")
-<<<<<<< HEAD
+
 hospitals <- droplevels(hospitals)
 
 #writing to CSV
 write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
-=======
+
 hospitals <- transmute(hospitals, Date, Governorate, Target, Sub.category)
 hospitals <-  rename(hospitals, facility_type = "Sub.category")
-                   
+
 hospitals <- droplevels(hospitals)
 levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
 
@@ -120,4 +156,3 @@ govs <- merge(cholera2,bombings)
 ###############
 
 cor(miniset$Freq, miniset$attack_rate)
->>>>>>> 8d6d6d530cae4919b376a76f9a077a9ebd431551
