@@ -3,8 +3,6 @@ library(dplyr)
 library(ggplot2)
 setwd("~/Documents/GitHub/2017-Cholera-in-Yemen")
 choleradata <- read.csv("Yemen Cholera Outbreak Epidemiology Data - Data_Governorate_Level.csv")
-yemendata <- read.csv("ydp.csv")
-
 
 ######################
 # Getting data ready #
@@ -69,10 +67,12 @@ cholera$COD <- as.factor(cholera$COD)
 
 cholera <- mutate(cholera, case_fatality = round((Deaths/Cases)*100, 1))
 #write to CSV
-write.csv(cholera, file = "2017YemenCholera.csv")
+#write.csv(cholera, file = "2017YemenCholera.csv")
 
+#################
+# Visualization #
+#################
 
-#Animated Map
 library(gganimate)
 library(tidyverse)
 cholera2 <- transmute(cholera, Date= Date, Cases = Cases, COD = COD)
@@ -80,6 +80,13 @@ cholera2 <- spread(cholera2, Date, Cases) #this has to be done to introduce NA v
 cholera2 <- gather(cholera2, "Date", "Cases", -1)
 cholera2$Date <- as.Date(cholera2$Date)
 
+library(directlabels)
+ggplot(cholera2, aes(x=Date, y= Cases, color = COD)) + geom_line() + theme_minimal() +
+  theme(legend.position = "none")  +
+  scale_x_date(limits = as.Date(c('2017-05-22','2018-04-01'))) +
+  geom_dl(aes(label = COD), method = list("last.points", cex = 0.8)) + labs( title = "Cumulative Cholera Cases in Yemen, by Governorate",
+                                                                             caption = "Data from WHO situation reports")
+ggsave("linechart.png", width = 6, height = 5, units = "in")
 
 library(sf)
 yemen1 <- read_sf("yemen_admin_20171007_shape")
@@ -125,55 +132,6 @@ yemen_AR <- ggplot(map3) + geom_sf(aes(fill = attack_rate), color = "black") +
 img <- animate(yemen_AR)
 anim_save("Yemen_AR.gif")
 
-ggplot(cholera2) + geom_line(aes(x=Date, y= Cases, color = COD)) + 
+
+ggplot(cholera) + geom_area(aes(x=Date, y= Deaths, fill = COD)) + 
   theme(legend.position = "bottom") 
-### The next part of this is a massive work in progress ###
-
-#Subsetting out hospital airstrikes from overall airstrike data
-hospitals <- subset(yemendata, Main.category == "Medical_Facility")
-
-hospitals <- droplevels(hospitals)
-
-#writing to CSV
-write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
-
-hospitals <- transmute(hospitals, Date, Governorate, Target, Sub.category)
-hospitals <-  rename(hospitals, facility_type = "Sub.category")
-
-hospitals <- droplevels(hospitals)
-levels(hospitals$Governorate) <- c("Abyan", "Aden", "Amran", "Al Bayda", "Sana'a", "Hajjah", "Al Hudaydah", "Lahj", "Marib", "Sa'ada", "Sana'a", "Shabwah", "Taizz")
-
-#writing to CSV
-write.csv(hospitals, file = "2017YemenHospitalAirstrike.csv")
-
-
-
-rm("choleradata", "hadramaut", "yemendata")
-
-# Number of times each governorate had a hospital that was bombed
-
-bombings <- hospitals$Governorate %>% 
-  unlist %>% 
-  table %>% 
-  as.data.frame
-
-bombings <- rename(bombings, Governorate = ".") ## probably a more efficient way to do this part
-
-
-cholera <-  rename(cholera, Governorate = "COD") ## should have done this earlier, but now i'm being lazy.
-
-#combining bombing dataset with cholera dataset - want to see ARs
-#in areas that got bombed
-
-test <- subset(cholera, cholera$Date == "2017-05-22")
-test <- subset(test, select = c(Governorate, attack_rate))
-
-miniset <- merge(test,bombings)
-
-cholera2 <- subset(cholera, select = c(Date, Governorate, attack_rate))
-govs <- merge(cholera2,bombings)
-###############
-# Correlation #
-###############
-
-cor(miniset$Freq, miniset$attack_rate)
