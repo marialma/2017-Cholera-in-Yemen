@@ -10,8 +10,10 @@ The current plan is to shape data using R, then using [Bokeh](http://bokeh.pydat
 - [x] Plot out outbreak for governorates 
   * [Case counts here](http://htmlpreview.github.io/?https://github.com/marialma/2017-Cholera-in-Yemen/blob/master/2017Cholera.html)
   * [Attack rate here](http://htmlpreview.github.io/?https://github.com/marialma/2017-Cholera-in-Yemen/blob/master/2017CholeraAR.html)
-- [ ] Map data with time series 
+- [x] Map data with time series 
 - [ ] Include bombing data 
 
 ## 
 [Initial mapping attempt in Tableau here](https://public.tableau.com/profile/maria.ma5849#!/vizhome/YemenCholera/Story1), but I feel like there are too many limitations to using Tableau. I hope to start to recreate this. 
+
+[Short article with animated maps here](https://medium.com/@maria.ma/progression-of-the-ongoing-cholera-outbreak-in-yemen-4d370b38afac) - Animated map data for case counts and attack rates
